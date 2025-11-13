@@ -1,0 +1,352 @@
+{
+  "info": {
+    "name": "Binance API Service",
+    "description": "Complete API collection for Binance service endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "version": "1.2.0"
+  },
+  "item": [
+    {
+      "name": "Market Data",
+      "item": [
+        {
+          "name": "Get Server Time",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/binance/time",
+              "host": ["{{baseUrl}}"],
+              "path": ["binance", "time"]
+            },
+            "description": "Get current Binance server time"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Exchange Info",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/binance/exchange-info",
+              "host": ["{{baseUrl}}"],
+              "path": ["binance", "exchange-info"]
+            },
+            "description": "Get exchange information from Binance"
+          },
+          "response": []
+        },
+        {
+          "name": "Get All Ticker Prices",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/binance/market/price",
+              "host": ["{{baseUrl}}"],
+              "path": ["binance", "market", "price"]
+            },
+            "description": "Get all ticker prices"
+          },
+          "response": []
+        },
+        {
+          "name": "Get Single Ticker Price",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/binance/market/price?symbol={{testSymbol}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["binance", "market", "price"],
+              "query": [
+                {
+                  "key": "symbol",
+                  "value": "{{testSymbol}}",
+                  "description": "Trading pair symbol (e.g., BTCUSDT)"
+                }
+              ]
+            },
+            "description": "Get ticker price for specific symbol"
+          },
+          "response": []
+        }
+      ],
+      "description": "Endpoints related to market data and exchange information"
+    },
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "Health Check",
+          "request": {
+            "method": "GET",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/binance/health",
+              "host": ["{{baseUrl}}"],
+              "path": ["binance", "health"]
+            },
+            "description": "Check API health and Binance connectivity"
+          },
+          "response": []
+        }
+      ],
+      "description": "Health check endpoints"
+    },
+    {
+      "name": "Trading",
+      "item": [
+        {
+          "name": "Place Sell Orders",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"symbol\": \"{{testSymbol}}\",\n  \"price\": \"35000.00\",\n  \"orders\": [\n    {\n      \"apiKey\": \"{{testApiKey}}\",\n      \"secret\": \"{{testSecret}}\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/binance/sell-orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["binance", "sell-orders"]
+            },
+            "description": "Place multiple sell orders using different API credentials"
+          },
+          "response": []
+        },
+        {
+          "name": "Place Batch Orders - Limit Buy",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"symbol\": \"{{testSymbol}}\",\n  \"side\": \"BUY\",\n  \"type\": \"LIMIT\",\n  \"quantity\": \"0.001\",\n  \"price\": \"34000.00\",\n  \"orders\": [\n    {\n      \"apiKey\": \"{{testApiKey}}\",\n      \"secret\": \"{{testSecret}}\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/binance/make-orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["binance", "make-orders"]
+            },
+            "description": "Place batch limit buy orders"
+          },
+          "response": []
+        },
+        {
+          "name": "Place Batch Orders - Market Buy",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"symbol\": \"{{testSymbol}}\",\n  \"side\": \"BUY\",\n  \"type\": \"MARKET\",\n  \"quantity\": \"0.001\",\n  \"orders\": [\n    {\n      \"apiKey\": \"{{testApiKey}}\",\n      \"secret\": \"{{testSecret}}\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/binance/make-orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["binance", "make-orders"]
+            },
+            "description": "Place batch market buy orders"
+          },
+          "response": []
+        },
+        {
+          "name": "Place Batch Orders - Limit Sell",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"symbol\": \"{{testSymbol}}\",\n  \"side\": \"SELL\",\n  \"type\": \"LIMIT\",\n  \"quantity\": \"0.001\",\n  \"price\": \"36000.00\",\n  \"orders\": [\n    {\n      \"apiKey\": \"{{testApiKey}}\",\n      \"secret\": \"{{testSecret}}\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/binance/make-orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["binance", "make-orders"]
+            },
+            "description": "Place batch limit sell orders"
+          },
+          "response": []
+        },
+        {
+          "name": "Place Batch Orders - Multiple Accounts",
+          "request": {
+            "method": "POST",
+            "header": [
+              {
+                "key": "Content-Type",
+                "value": "application/json"
+              }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"symbol\": \"{{testSymbol}}\", \n  \"side\": \"BUY\",\n  \"type\": \"LIMIT\",\n  \"quantity\": \"0.001\",\n  \"price\": \"34000.00\",\n  \"orders\": [\n    {\n      \"apiKey\": \"{{testApiKey}}\",\n      \"secret\": \"{{testSecret}}\"\n    },\n    {\n      \"apiKey\": \"{{testApiKey2}}\",\n      \"secret\": \"{{testSecret2}}\"\n    },\n    {\n      \"apiKey\": \"{{testApiKey3}}\",\n      \"secret\": \"{{testSecret3}}\"\n    }\n  ]\n}",
+              "options": {
+                "raw": {
+                  "language": "json"
+                }
+              }
+            },
+            "url": {
+              "raw": "{{baseUrl}}/binance/make-orders",
+              "host": ["{{baseUrl}}"],
+              "path": ["binance", "make-orders"]
+            },
+            "description": "Place batch orders using multiple API credentials"
+          },
+          "response": []
+        }
+      ],
+      "description": "Trading endpoints for placing orders"
+    }
+  ],
+  "event": [
+    {
+      "listen": "prerequest",
+      "script": {
+        "exec": [
+          "// Add any pre-request scripts here",
+          "console.log('Making request to:', pm.request.url.toString());"
+        ],
+        "type": "text/javascript"
+      }
+    },
+    {
+      "listen": "test",
+      "script": {
+        "exec": [
+          "// Basic tests for all requests",
+          "pm.test('Status code is success', function () {",
+          "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+          "});",
+          "",
+          "pm.test('Response time is less than 5000ms', function () {",
+          "    pm.expect(pm.response.responseTime).to.be.below(5000);",
+          "});",
+          "",
+          "pm.test('Content-Type is application/json', function () {",
+          "    pm.expect(pm.response.headers.get('Content-Type')).to.include('application/json');",
+          "});"
+        ],
+        "type": "text/javascript"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:3000",
+      "type": "string",
+      "description": "Base URL for the API"
+    },
+    {
+      "key": "testSymbol",
+      "value": "BTCUSDT",
+      "type": "string",
+      "description": "Test trading pair symbol"
+    },
+    {
+      "key": "testApiKey",
+      "value": "your_binance_api_key_here",
+      "type": "string",
+      "description": "Primary test API key"
+    },
+    {
+      "key": "testSecret",
+      "value": "your_binance_secret_key_here",
+      "type": "string",
+      "description": "Primary test secret key"
+    },
+    {
+      "key": "testApiKey2",
+      "value": "your_second_api_key_here",
+      "type": "string",
+      "description": "Secondary test API key"
+    },
+    {
+      "key": "testSecret2",
+      "value": "your_second_secret_key_here",
+      "type": "string",
+      "description": "Secondary test secret key"
+    },
+    {
+      "key": "testApiKey3",
+      "value": "your_third_api_key_here",
+      "type": "string",
+      "description": "Third test API key"
+    },
+    {
+      "key": "testSecret3",
+      "value": "your_third_secret_key_here",
+      "type": "string",
+      "description": "Third test secret key"
+    }
+  ]
+}

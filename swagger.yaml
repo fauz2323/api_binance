@@ -1,0 +1,391 @@
+openapi: 3.0.0
+info:
+  title: Binance API Service
+  description: REST API service for interacting with Binance exchange
+  version: 1.2.0
+  contact:
+    name: API Support
+    email: support@example.com
+  license:
+    name: MIT
+    url: https://opensource.org/licenses/MIT
+
+servers:
+  - url: http://localhost:3000
+    description: Development server
+  - url: https://api.yourdomain.com
+    description: Production server
+
+paths:
+  /binance/time:
+    get:
+      summary: Get Binance server time
+      description: Retrieves the current server time from Binance API
+      tags:
+        - Market Data
+      responses:
+        '200':
+          description: Server time retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  serverTime:
+                    type: number
+                    example: 1699999999999
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /binance/exchange-info:
+    get:
+      summary: Get exchange information
+      description: Retrieves exchange information from Binance API
+      tags:
+        - Market Data
+      responses:
+        '200':
+          description: Exchange information retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  timezone:
+                    type: string
+                    example: 'UTC'
+                  serverTime:
+                    type: number
+                    example: 1699999999999
+                  rateLimits:
+                    type: array
+                    items:
+                      type: object
+                  exchangeFilters:
+                    type: array
+                    items:
+                      type: object
+                  symbols:
+                    type: array
+                    items:
+                      type: object
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /binance/market/price:
+    get:
+      summary: Get ticker price
+      description: Retrieves ticker price for a specific symbol or all symbols
+      tags:
+        - Market Data
+      parameters:
+        - name: symbol
+          in: query
+          description: Trading pair symbol (e.g., BTCUSDT)
+          required: false
+          schema:
+            type: string
+            example: 'BTCUSDT'
+      responses:
+        '200':
+          description: Price data retrieved successfully
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/SinglePrice'
+                  - type: array
+                    items:
+                      $ref: '#/components/schemas/SinglePrice'
+        '400':
+          description: Bad request - Invalid symbol
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '503':
+          description: Service unavailable
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /binance/health:
+    get:
+      summary: Health check
+      description: Checks the health status of the API and Binance connectivity
+      tags:
+        - Health
+      responses:
+        '200':
+          description: Health status
+          content:
+            application/json:
+              schema:
+                oneOf:
+                  - $ref: '#/components/schemas/HealthyResponse'
+                  - $ref: '#/components/schemas/UnhealthyResponse'
+
+  /binance/sell-orders:
+    post:
+      summary: Place sell orders
+      description: Places multiple sell orders using different API credentials
+      tags:
+        - Trading
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SellOrderRequest'
+      responses:
+        '200':
+          description: Sell orders placed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        '400':
+          description: Bad request - Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid API credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+  /binance/make-orders:
+    post:
+      summary: Place batch orders
+      description: Places multiple orders in batch with various parameters
+      tags:
+        - Trading
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BatchOrderRequest'
+      responses:
+        '200':
+          description: Batch orders placed successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderResponse'
+        '400':
+          description: Bad request - Invalid parameters
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '401':
+          description: Unauthorized - Invalid API credentials
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+        '500':
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Error'
+
+components:
+  schemas:
+    SinglePrice:
+      type: object
+      properties:
+        symbol:
+          type: string
+          example: 'BTCUSDT'
+        price:
+          type: string
+          example: '35000.00000000'
+
+    ApiCredentials:
+      type: object
+      required:
+        - apiKey
+        - secret
+      properties:
+        apiKey:
+          type: string
+          description: Binance API key
+          example: 'your_binance_api_key'
+        secret:
+          type: string
+          description: Binance secret key
+          example: 'your_binance_secret_key'
+
+    SellOrderRequest:
+      type: object
+      required:
+        - symbol
+        - orders
+      properties:
+        symbol:
+          type: string
+          description: Trading pair symbol
+          example: 'BTCUSDT'
+        price:
+          type: string
+          description: Sell price (optional)
+          example: '35000.00'
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiCredentials'
+          description: Array of API credentials for multiple accounts
+
+    BatchOrderRequest:
+      type: object
+      required:
+        - symbol
+        - side
+        - type
+        - quantity
+        - price
+        - orders
+      properties:
+        symbol:
+          type: string
+          description: Trading pair symbol
+          example: 'BTCUSDT'
+        side:
+          type: string
+          enum: [BUY, SELL]
+          description: Order side
+          example: 'BUY'
+        type:
+          type: string
+          enum:
+            [
+              LIMIT,
+              MARKET,
+              STOP_LOSS,
+              STOP_LOSS_LIMIT,
+              TAKE_PROFIT,
+              TAKE_PROFIT_LIMIT,
+            ]
+          description: Order type
+          example: 'LIMIT'
+        quantity:
+          type: string
+          description: Quantity to trade
+          example: '0.001'
+        price:
+          type: string
+          description: Order price
+          example: '34000.00'
+        orders:
+          type: array
+          items:
+            $ref: '#/components/schemas/ApiCredentials'
+          description: Array of API credentials for multiple accounts
+
+    OrderResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+          example: true
+        results:
+          type: array
+          items:
+            type: object
+            properties:
+              orderId:
+                type: number
+                example: 12345
+              symbol:
+                type: string
+                example: 'BTCUSDT'
+              side:
+                type: string
+                example: 'BUY'
+              type:
+                type: string
+                example: 'LIMIT'
+              quantity:
+                type: string
+                example: '0.001'
+              price:
+                type: string
+                example: '34000.00'
+              status:
+                type: string
+                example: 'NEW'
+
+    HealthyResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: 'healthy'
+        binanceServerTime:
+          type: number
+          example: 1699999999999
+        timestamp:
+          type: number
+          example: 1699999999999
+
+    UnhealthyResponse:
+      type: object
+      properties:
+        status:
+          type: string
+          example: 'unhealthy'
+        error:
+          type: string
+          example: 'Connection timeout'
+        timestamp:
+          type: number
+          example: 1699999999999
+
+    Error:
+      type: object
+      properties:
+        statusCode:
+          type: number
+          example: 400
+        message:
+          type: string
+          example: 'Bad Request'
+        error:
+          type: string
+          example: 'Invalid parameters'
+
+  securitySchemes:
+    BinanceApiKey:
+      type: apiKey
+      in: header
+      name: X-MBX-APIKEY
+      description: Binance API Key (included in request body for this service)
+
+tags:
+  - name: Market Data
+    description: Operations related to market data and exchange information
+  - name: Trading
+    description: Operations related to placing and managing orders
+  - name: Health
+    description: Health check and monitoring endpoints
