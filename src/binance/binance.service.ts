@@ -142,7 +142,7 @@ export class BinanceService {
   async placeOrderbatch(data: PlaceOrderBatchDto): Promise<any> {
     const dataArrays = data.orders;
     const side = 'BUY';
-    const limit = pLimit(25); // Batasi ke 5 permintaan bersamaan
+    const limit = pLimit(25);
 
     const requestBatch = dataArrays.map((order) => {
       return limit(async () => {
@@ -219,7 +219,7 @@ export class BinanceService {
 
   async makeSellOrders(orders: SellOrderDto): Promise<any> {
     const dataArrays = orders.orders;
-    const limit = pLimit(25); // Batasi ke 25 permintaan bersamaan
+    const limit = pLimit(25);
 
     const requestBatch = dataArrays.map((order) => {
       return limit(async () => {
